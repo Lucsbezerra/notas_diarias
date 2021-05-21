@@ -84,7 +84,8 @@ class _HomeState extends State<Home> {
     String descricao = _descricaoController.text;
 
     if (anotacaoSelecionada == null) {
-      Anotacao anotacao = Anotacao(titulo, descricao, DateTime.now().toString());
+      Anotacao anotacao =
+          Anotacao(titulo, descricao, DateTime.now().toString());
       int resultado = await _db.salvarAnotacao(anotacao);
     } else {
       anotacaoSelecionada.titulo = titulo;
@@ -107,6 +108,11 @@ class _HomeState extends State<Home> {
     DateTime dataConvertida = DateTime.parse(data);
     String dataFotmatada = formatador.format(dataConvertida);
     return dataFotmatada;
+  }
+
+  _removerAnotacao(int id) async {
+    await _db.removerAnotacao(id);
+    _recuperarAnotacoes();
   }
 
   @override
@@ -151,7 +157,9 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          _removerAnotacao(item.id);
+                        },
                         child: Padding(
                           padding: EdgeInsets.only(right: 0),
                           child: Icon(
