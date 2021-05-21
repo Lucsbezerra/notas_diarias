@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -6,6 +5,11 @@ import 'model/anotacao.dart';
 
 class AnotacaoHelper {
   static final String nomeTabela = "anotacao";
+
+  static final String colunaId = "id";
+  static final String colunaTitulo = "titulo";
+  static final String colunaDescricao = "descricao";
+  static final String colunaData = "data";
 
   //atributo do mesmo tipo da classe
   static final AnotacaoHelper _anotacaoHelper = AnotacaoHelper._internal();
@@ -48,5 +52,23 @@ class AnotacaoHelper {
 
     int resultado = await bancoDados.insert(nomeTabela, anotacao.toMap());
     return resultado;
+  }
+
+  recuperarAnotacoes() async {
+    var bancoDados = await db;
+    String sql = " SELECT * FROM $nomeTabela ORDER BY data DESC ";
+    List anotacoes = await bancoDados.rawQuery(sql);
+    return anotacoes;
+  }
+
+  Future<int> atualizarAnotacao(Anotacao anotacao) async {
+    var bancoDados = await db;
+
+    return await bancoDados.update(
+      nomeTabela, 
+      anotacao.toMap(),
+      where: "id = ?", 
+      whereArgs: [anotacao.id],
+      );
   }
 }
